@@ -1,13 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
-const ExpenseFilter = (props) => {
+const ExpenseFilter = ({ selectedYear, expenses, onFilterYear, onFilteredExpenses }) => {
     const yearChangeHandler = (event) => {
-        props.onFilterYear(event.target.value);
+        const selectedYear = event.target.value;
+        onFilterYear(selectedYear);
     };
+
+    useEffect(() => {
+        const filteredExpenses =
+            selectedYear === 'all'
+                ? expenses
+                : expenses.filter(
+                      (exp) => new Date(exp.date).getFullYear().toString() === selectedYear
+                  );
+
+        onFilteredExpenses(filteredExpenses);
+    }, [selectedYear, expenses, onFilteredExpenses]);
+
     return (
-        <div className='expense-filter'>
-            <label> filter by year:</label>
-            <select onChange={yearChangeHandler} value={props.selectedYear}>
+        <div className="expense-filter">
+            <label>Filter by year:</label>
+            <select onChange={yearChangeHandler} value={selectedYear}>
                 <option value="all">All Years</option>
                 <option value="2023">2023</option>
                 <option value="2024">2024</option>
